@@ -7,114 +7,121 @@ Linked list:
 '''
 
 class Node:
-    def __init__(self, value):
+    def __init__(self, value, next=None):
         self.value = value
-        self.next = None
+        self.next = next
 
 
 class LinkedList:
     def __init__(self):
         self.head = None
-        self.size = 0
     
     def add_to_front(self, value):
         node = Node(value)
+    
         if self.head is None:
             self.head = node
-        else:
-            node.next = self.head
-            self.head = node
-        self.size += 1
-        return
+            return
+        node.next = self.head
+        self.head = node
 
     def add_to_end(self, value):
         node = Node(value)
         if self.head is None:
             self.head = node
-        else:
-            current = self.head
-            while current.next is not None:
-                current = current.next
-            current.next = node
-        self.size += 1
-    
+            return
+        
+        current = self.head
+        while current.next is not None:
+            current = current.next
+        current.next = node
+        return
+
     def pop_front(self):
         if self.head is None:
             return None
-        value = self.head.value
+        pop = self.head
         self.head = self.head.next
-        self.size -= 1
-        return value
-
+        return pop
+    
     def pop_end(self):
         if self.head is None:
             return None
-        if self.head.next is None:
-            value = self.head.value
-            self.head = None
-            self.size -= 1
-            return value
-        
         current = self.head
-        while current.next and current.next.next is not None:
+        while current.next.next is not None:
             current = current.next
         
-        value = current.next.value
+        pop = current.next
         current.next = None
-        self.size -= 1
-        return value
+        return pop
 
-    def __str__(self):
-        result = []
+    def reverse(self):
+        prev = None
         current = self.head
         while current is not None:
-            result.append(str(current.value))
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
+
+    def middle_node(self):
+        faster_pointer = middle_pointer = self.head
+        while faster_pointer and faster_pointer.next:
+            faster_pointer = faster_pointer.next.next
+            middle_pointer = middle_pointer.next
+        return middle_pointer
+
+    def has_cycle(self):
+        slow = self.head
+        fast = self.head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return True
+        return False
+
+    def __str__(self):
+        values = []
+        if self.head is None:
+            return ''
+        current = self.head
+        while current is not None:
+            values.append(str(current.value))
             current = current.next
-        return " -> ".join(result)    
-    
-def invert_linked_list(ll: LinkedList):
-    # Initialize three pointers: curr, prev and next
-    curr = ll.head
-    prev = None
+        return ' -> '.join(values)
+        
 
-    # Traverse all the nodes of Linked List
-    while curr is not None:
-
-        # Store next
-        next_node = curr.next
-
-        # Reverse current node's next pointer
-        curr.next = prev
-
-        # Move pointers one position ahead
-        prev = curr
-        curr = next_node
-
-    # Return the head of reversed linked list
-    return prev
 
 
 tst = LinkedList()
 tst.add_to_end(1)
 tst.add_to_end(2)
 tst.add_to_end(3)
-print(tst)
+assert str(tst) == "1 -> 2 -> 3"
 tst.pop_end()
-print(tst)
+assert str(tst) == "1 -> 2"
 tst.pop_front()
-print(tst)
+assert str(tst) == "2"
 
 tst = LinkedList()
 tst.add_to_front(1)
 tst.add_to_front(2)
 tst.add_to_front(3)
-print(tst)
-tst = invert_linked_list(tst)
-print("invertida", tst)
+assert str(tst) == "3 -> 2 -> 1"
 tst.pop_end()
-print(tst)
+assert str(tst) == "3 -> 2"
 tst.pop_front()
-print(tst)
+assert str(tst) == "2"
 tst.pop_front()
-print(tst)
+assert str(tst) == ""
 
+tst = LinkedList()
+tst.add_to_end(1)
+tst.add_to_end(2)
+tst.add_to_end(3)
+print(tst, tst.head.value)
+tst.reverse()
+assert str(tst) == "3 -> 2 -> 1"
+print(tst, tst.head.value)
