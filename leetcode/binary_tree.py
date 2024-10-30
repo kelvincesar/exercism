@@ -1,3 +1,4 @@
+from collections import deque
 from typing import List, Optional
 
 
@@ -43,6 +44,23 @@ class BinaryTree:
             return self._search_recursively(data, node.left)
         else:
             return self._search_recursively(data, node.right)
+    def bfs(self, data):
+        if self.root is None:
+            return False
+
+        queue = deque()
+        queue.append(self.root)
+
+        while queue:
+            node = queue.popleft()
+            if node.data == data:
+                return True
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        
+        return False
     
     def dfs(self, data):
         return self._dfs_search(data, self.root)
@@ -136,3 +154,8 @@ for num in numbers:
     print("dfs number", num, tree.dfs(num))
 
 print("dfs number 6", tree.dfs(6))
+
+for num in numbers:
+    print("bfs number", num, tree.bfs(num))
+
+print("bfs number 6", tree.bfs(6))
