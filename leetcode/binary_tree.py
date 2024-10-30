@@ -1,3 +1,6 @@
+from typing import List, Optional
+
+
 class Node:
     def __init__(self, data) -> None:
         self.data = data
@@ -40,6 +43,20 @@ class BinaryTree:
             return self._search_recursively(data, node.left)
         else:
             return self._search_recursively(data, node.right)
+    
+    def dfs(self, data):
+        return self._dfs_search(data, self.root)
+    
+    def _dfs_search(self, data, node):
+        if node is None:
+            return False
+        if node.data == data:
+            return True
+
+        if self._dfs_search(data, node.left):
+            return True
+        if self._dfs_search(data, node.right):
+            return True
     def preorder_traversal(self):
         result = []
         self._preorder_traversal(self.root, result)
@@ -75,13 +92,25 @@ class BinaryTree:
             result.append(node.data)
         return
     
+
+def buildTree(inorder: List[int], postorder: List[int]) -> Optional[Node]:
+        if not inorder or not postorder:
+            return None
+        
+        root = Node(postorder.pop()) 
+        inorder_index = inorder.index(root.data)
+        root.right = buildTree(inorder[inorder_index+1:], postorder)
+        root.left = buildTree(inorder[:inorder_index], postorder)
+
+        return root
+
+
 tree = BinaryTree()
 numbers = [5, 3, 8, 1, 7, 9]
 for num in numbers:
     tree.insert(num)
 
 for num in numbers:
-    found = tree.search(num)
     print("number", num, tree.search(num))
 
 print("number 6", tree.search(6))
@@ -97,3 +126,13 @@ assert inorder_traversal == [1, 3, 5, 7, 8, 9]
 postorder_traversal = tree.postorder_traversal()
 print(postorder_traversal)
 assert postorder_traversal == [1, 3, 7, 9, 8, 5]
+
+
+new_tree = buildTree(inorder_traversal, postorder_traversal)
+print(new_tree)
+
+
+for num in numbers:
+    print("dfs number", num, tree.dfs(num))
+
+print("dfs number 6", tree.dfs(6))
