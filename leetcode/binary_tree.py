@@ -122,6 +122,29 @@ def buildTree(inorder: List[int], postorder: List[int]) -> Optional[Node]:
 
         return root
 
+def levelOrder(root: Optional[Node]) -> List[List[int]]:
+    # [[3],[9,20],[15,7]]
+    result = []
+
+    q = deque()
+    q.append(root)
+
+    while q:
+        levels = []
+        size = len(q)
+        for _ in range(size):
+            node = q.popleft()
+            if node is not None:
+                levels.append(node.data)
+                if node.left is not None:
+                    q.append(node.left)
+                if node.right is not None:
+                    q.append(node.right)
+        
+        if levels:
+            result.append(levels)
+    return result
+
 
 tree = BinaryTree()
 numbers = [5, 3, 8, 1, 7, 9]
@@ -159,3 +182,6 @@ for num in numbers:
     print("bfs number", num, tree.bfs(num))
 
 print("bfs number 6", tree.bfs(6))
+
+
+print("level order", levelOrder(tree.root))
